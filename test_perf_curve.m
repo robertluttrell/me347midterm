@@ -14,6 +14,8 @@ ylim([0, 10]);
 
 legendCell = cellstr(num2str(omega_arr', 'omega=%-d'));
 legend(legendCell, "Location", "Northwest");
+xlabel("Q [cfm]");
+ylabel("H [in]");
 
 % legend("3000 rpm", "4000 rpm", "5000 rpm", "6000 rpm");
 
