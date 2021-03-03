@@ -1,12 +1,13 @@
 function [h, q] = get_perf_curve(omega)
-   q = [1760,
-        2200,
-        2640,
-        3080,
-        3520,
-        3960,
-        4400,
-        4840];
+
+   q_provided = [1760,
+                 2200,
+                 2640,
+                 3080,
+                 3520,
+                 3960,
+                 4400,
+                 4840];
 
    rpm_05 = [2119,
              2562,
@@ -88,5 +89,17 @@ function [h, q] = get_perf_curve(omega)
             5604,
             5989,
             6384];
+
+   h = [0.5, 1, 2, 3, 4, 5, 6, 7, 8]';
+   rpm_vects = [rpm_05, rpm_1, rpm_2, rpm_3, rpm_4, rpm_5, rpm_6, rpm_7, rpm_8]';
+   q = zeros(length(h), 1)
+
+   for i = 1:length(h)
+      cur_rpm_vect = rpm_vects(i, :)';
+      % display(cur_rpm_vect);
+      % display(q_provided);
+      new_q = interp1(cur_rpm_vect, q_provided, [omega]);
+      q(i) = new_q;
+   end
 
 end
