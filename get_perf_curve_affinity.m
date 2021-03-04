@@ -7,7 +7,7 @@ function [h, q] = get_perf_curve(omega)
                  3520,
                  3960,
                  4400,
-                 4840];
+                 4840];  % cfm
 
    rpm_05 = [2119,
              2562,
@@ -90,23 +90,48 @@ function [h, q] = get_perf_curve(omega)
             5989,
             6384];
 
-   sp = [0.5, 1, 2, 3, 4, 5, 6, 7, 8]';
+   sp = [0.5, 1, 2, 3, 4, 5, 6, 7, 8]'; % in H2O
    rpm_vects = [rpm_05, rpm_1, rpm_2, rpm_3, rpm_4, rpm_5, rpm_6, rpm_7, rpm_8]';
    q = zeros(length(sp), 1);
 
 
-   conversion_sp = 0.24836;  % kPa / in
    conversion_omega = 0.01667;  % rps / rpm
    conversion_q = 0.000472;  % m^3/s / cfm
+   conversion_A = 0.0929;  % m^3 / ft^3
+   conversion_rho = 16.018;  % kg/m^3 / lbm/ft^3
+   conversion_sp = 0.00024836;  % Pa / in H2O
+   g_metric = 9.81;  % m / s^2
+   in_per_m = 39.37;  % in / m
+   K_L = 0.2;
 
    for i = 1:length(sp)
       cur_rpm_vect = rpm_vects(i, :)';
       [min_value, closest_index] = min(abs(omega - cur_rpm_vect));
       closest_omega = cur_rpm_vect(closest_index);
-      closest_q = q_provided(closest_index);
 
-      new_q = (omega / closest_omega) * closest_q;
+      % Get closest Q
+      closest_q_cfm = q_provided(closest_index);  % cfm
+
+      % Use affinity laws to get Q at actual omega
+      new_q = (omega / closest_omega) * closest_q_cfm;  % cfm
       q(i) = new_q;
+
+      % Get closest actual head rise
+      A_fan_ft2 = 8.90;  % ft^2
+      A_fan_metric = A_fan_ft2 * conversion_A;  % m^2
+      closest_q_metric = closest_q_cfm * conversion_q;  % m^3 / s
+      vbar_fan_metric = closest_q_metric / A_fan_metric;  % m / s
+      rho_air_std = 0.075;  % lbm / ft^3
+      rho_H2O_std = 62.4;  % lbm / ft^3
+      rho_air_metric = rho_air_std * conversion_rho;  % kg / m^3
+      sp_inH2O = sp[closest_index];  % in H2O
+      sp_metric = sp_inH2O * conversion_sp;  % Pa
+      h_a_m_air = sp_Pa / (rho_air_metric * g_metric) + (1 + K_L) * ( (vbar_fan_metric)^2 / (2 * g_metric) );  % m air
+      h_a_in_air = h_a_m_air * in_per_m;  % in air
+      closest_h_a_in_H2O = h_a_in_air * (rho_air_std / rho_H2O_std);
+
+
+
    end
 
 end
