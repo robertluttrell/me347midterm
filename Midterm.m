@@ -84,6 +84,7 @@ hold on;
 plot(Qcfm, H, "LineWidth", 2);
 
 % Fan curves
+intersections = [];
 for idx = 1:length(omega_arr)
    omega = omega_arr(idx);
    [h_raw, q_raw] = get_perf_curve_affinity(omega);
@@ -91,8 +92,17 @@ for idx = 1:length(omega_arr)
    a = coeffs(1);
    b = coeffs(2);
    c = coeffs(3);
-   q_fit = linspace(0, 60000, 1000);
+   q_fit = Qcfm;
    h_fit = a*q_fit.^2 + b*q_fit + c;
+   diffs = h_fit - H;
+   absdiffs = abs(diffs);
+   [min_val, min_index] = min(absdiffs);
+   intersect_q = Qcfm(min_index);
+   intersect_h = H(min_index);
+   intersections = [intersections;
+                    intersect_q, intersect_h];
+   
+   
    plot(q_fit, h_fit, "LineWidth", 2);
 
 end
@@ -113,10 +123,18 @@ ylim([0, 12]);
 hold off;
 grid on;
 
+
 xlabel('Flowrate [cfm]');
 ylabel('Head [in H_2O]');
 title ('System and Fan Curve Intersection', "FontSize", 14);
 set(gca,'TickLabelInterpreter','latex')
 
 saveas(gcf, "curves.png");
+
+% Main figure - U vs F
+U = intersections(:,1);
+display(U);
+figure()
+plot(VFD_w', U, "LineWidth", 2);
+saveas(gcf, "mainfigure.png");
 
