@@ -1,4 +1,4 @@
-function [h, q] = get_perf_curve(omega)
+function [h, q] = get_perf_curve_affinity(omega)
 
    q_provided = [8900,
                  13350,
