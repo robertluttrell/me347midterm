@@ -1,4 +1,5 @@
-function [f] = friction(Re, epsilon, D)
+function [f] = friction(v, epsilon, D)
+   Re = reynolds(v);
    if Re < 2300
       f = 64 / Re;
    else
