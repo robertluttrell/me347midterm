@@ -124,6 +124,8 @@ function [h, q] = get_perf_curve_affinity(omega)
             1817,
             1934];  % updated
 
+
+
    sp = [0.5, 1, 2, 3, 4, 5, 6, 7, 8]'; % in H2O
    rpm_vects = [rpm_05, rpm_1, rpm_2, rpm_3, rpm_4, rpm_5, rpm_6, rpm_7, rpm_8]';
    q = zeros(length(sp), 1);
