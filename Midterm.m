@@ -71,17 +71,11 @@ diffuser_combined = ((fd/(8*tan(beta/2)))+(0.6*tan(beta/2)))*(1-((D1^4)/(D2^4)))
 honeycomb_minor = khc*(((Q/Ahc).^2)/(2*g));
 high_porosity_minor = khp*(((Q/Ahp).^2)/(2*g));
 
-%v = (max(velocity_term))*0.0155
-%ts = (max(test_section_major))*0.0155
-%cm = (max(contraction_minor))*0.0155
-%nd = (max(ninety_deg_minor))*0.0155
-%dc = (max(diffuser_combined))*0.0155
-%hc = (max(honeycomb_minor))*0.0155
-%hp = (max(high_porosity_minor))*0.0155
+
 
 Hreq = velocity_term + test_section_major + contraction_minor + ninety_deg_minor + diffuser_combined + honeycomb_minor + high_porosity_minor;
 H = Hreq*0.0155;
-%% Plot System Curve
+%% Plot System and Fan Curves
 
 figure;
 hold on;
@@ -102,7 +96,7 @@ grid on;
 
 xlabel('Flowrate (cfm)', "FontSize", 12);
 ylabel('Head (in H2O)', "FontSize", 12);
-title ('System Curve', "FontSize", 14);
+title ('System and Fan Curves', "FontSize", 14);
 
-saveas(gcf, "system.png");
+saveas(gcf, "curves.png");
 
