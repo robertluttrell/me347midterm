@@ -84,9 +84,25 @@ H = Hreq*0.0155;
 %% Plot System Curve
 
 figure;
-plot(Qcfm, H);
+hold on;
+% System curve
+plot(Qcfm, H, "LineWidth", 2);
+
+% Fan curves
+omega_arr = [linspace(230, 1600, 10)];
+
+for idx = 1:length(omega_arr)
+   omega = omega_arr(idx);
+   [h, q] = get_perf_curve_affinity(omega);
+   plot(q, h, "LineWidth", 2);
+end
+
+hold off;
 grid on;
 
 xlabel('Flowrate (cfm)', "FontSize", 12);
 ylabel('Head (in H2O)', "FontSize", 12);
 title ('System Curve', "FontSize", 14);
+
+saveas(gcf, "system.png");
+

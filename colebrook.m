@@ -7,7 +7,7 @@ function [f] = colebrook(Re, epsilon, D)
    while delta > 0
       f = f - tol;
       lhs = 1 / sqrt(f);
-      rhs = -2 * log10((epsilon / (3.7 * D)) + 2.51 / (Re * sqrt(f)));
+      rhs = -2 * log10((epsilon / (3.7 * D)) + 2.51 ./ (Re * sqrt(f)));
       delta = rhs - lhs;
    end
 
