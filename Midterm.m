@@ -21,6 +21,7 @@ Q = Qcfm*(1/60); %[ft^3/s]
 dsheave_motor = 8; %[in]
 dsheave_fan = 10; %[in]
 p = 4; %[#]
+omega_arr = VFD_w * 120 / p;
 
 % Velocity Term
 Aout_fan = 8.9; %[ft^2]
@@ -83,20 +84,39 @@ hold on;
 plot(Qcfm, H, "LineWidth", 2);
 
 % Fan curves
-omega_arr = [linspace(230, 1600, 10)];
-
 for idx = 1:length(omega_arr)
    omega = omega_arr(idx);
-   [h, q] = get_perf_curve_affinity(omega);
-   plot(q, h, "LineWidth", 2);
+   [h_raw, q_raw] = get_perf_curve_affinity(omega);
+   coeffs = polyfit(q_raw, h_raw, 2);
+   a = coeffs(1);
+   b = coeffs(2);
+   c = coeffs(3);
+   q_fit = linspace(0, 60000, 1000);
+   h_fit = a*q_fit.^2 + b*q_fit + c;
+   plot(q_fit, h_fit, "LineWidth", 2);
+
 end
+
+legendLabels = ["Wind Tunnel System",
+                "Fan at f = 10 Hz",
+                "Fan at f = 20 Hz",
+                "Fan at f = 30 Hz",
+                "Fan at f = 40 Hz",
+                "Fan at f = 50 Hz",
+                "Fan at f = 60 Hz"];
+
+legend(legendLabels, "Location", "SouthEast");
+
+xlim([0, 60000]);
+ylim([0, 12]);
 
 hold off;
 grid on;
 
-xlabel('Flowrate (cfm)', "FontSize", 12);
-ylabel('Head (in H2O)', "FontSize", 12);
-title ('System and Fan Curves', "FontSize", 14);
+xlabel('Flowrate [cfm]');
+ylabel('Head [in H_2O]');
+title ('System and Fan Curve Intersection', "FontSize", 14);
+set(gca,'TickLabelInterpreter','latex')
 
 saveas(gcf, "curves.png");
 
