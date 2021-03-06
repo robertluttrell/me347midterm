@@ -99,6 +99,7 @@ for idx = 1:length(omega_arr)
    [min_val, min_index] = min(absdiffs);
    intersect_q = Qcfm(min_index);
    intersect_h = H(min_index);
+   display(intersect_q / Ats);
    intersections = [intersections;
                     intersect_q, intersect_h];
    
@@ -132,9 +133,27 @@ set(gca,'TickLabelInterpreter','latex')
 saveas(gcf, "curves.png");
 
 % Main figure - U vs F
-U = intersections(:,1);
-display(U);
+Q_cfm = intersections(:,1);
+Q_cfs = Q_cfm / 60;
+U_theo = Q_cfs / Ats;
+
+U_exp = [33.68,
+          52.77,
+          79.56,
+          106.74,
+          133.68,
+          160.35];
+
+display(U_theo);
+
 figure()
-plot(VFD_w', U, "LineWidth", 2);
+hold on;
+plot(VFD_w', U_theo, "LineWidth", 2);
+scatter(VFD_w', U_exp, "ok");
+hold off;
+xlabel("VFD Input Frequency [Hz]");
+ylabel("Test Section Velocity [ft/s]");
+set(gca,'TickLabelInterpreter','Latex')
+legend({"Theoretical Model", "Experimental Data"});
 saveas(gcf, "mainfigure.png");
 
